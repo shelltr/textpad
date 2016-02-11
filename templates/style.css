@@ -1,3 +1,20 @@
-textarea {
-    width: 70%;
+html, body { 
+    height: 100%;
+    margin: 0;
+}
+
+#main, form {
+    height: 100%;
+}
+
+form {
+    position: relative;
+    top: 50%;
+    transform: translateY(-50%);
+    height: 90%;
+    margin-bottom: 0;
+}
+
+#user_text {
+    height: 70%;
 }
