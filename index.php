@@ -67,11 +67,7 @@ $app->post('/{gen_uid}', function($request, $response, $args) {
 
     return $this->view->render($response, 'note-template.twig', ['gen_uid' => $args['gen_uid'], 'user_text' => $user_text]);
 
-    // TODO: don't add if there's no content in the user_text
-    // TODO: on refresh, get rid of the alert (am I doing something improperly?)
-    // TODO: related -- refer to GET method instead of return!
 });
-
 
 // Run app
 $app->run();
