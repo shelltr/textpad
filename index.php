@@ -2,6 +2,7 @@
 require 'includes/vendor/autoload.php';
 require 'functions.php';
 require 'config.php';
+use Psr7Middlewares\Middleware\TrailingSlash;
 
 /* debugging data */
 $configuration = [
@@ -13,6 +14,7 @@ $c = new \Slim\Container($configuration);
 
 /* actual app */
 $app = new \Slim\App($c);
+$app->add(new TrailingSlash(false));
 
 /* Twig Settings */
 $container = $app->getContainer();
@@ -33,9 +35,9 @@ $container['view'] = function ($c) {
     return $view;
 };
 
-$app->get('/', function($request, $response, $args) {
+$app->get( '/', function($request, $response, $args) {
     $gen_uid = gen_uid();
-    return $response->withRedirect('/' . $gen_uid);
+    return $response->withRedirect( $gen_uid );
 });
 
 $app->get('/{gen_uid}', function($request, $response, $args) {
@@ -48,8 +50,23 @@ $app->get('/{gen_uid}', function($request, $response, $args) {
     $note_details = $q->fetch();
     Database::disconnect();
     
-    return $this->view->render($response, 'note-template.twig', ['gen_uid' => $args['gen_uid'],
-     'user_text' => $note_details['user_text']]);
+    return $this->view->render($response, 'note-template.twig', 
+        ['gen_uid' => $args['gen_uid'],
+        'user_text' => $note_details['user_text']]);
+});
+
+$app->get('/{gen_uid}/raw.txt', function($request, $response, $args) {
+    // get from database if exists
+    $pdo = Database::connect();
+    $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION); 
+    $sql = 'SELECT user_text FROM textpad WHERE gen_uid=?';
+    $q = $pdo->prepare($sql);
+    $q->execute(array($args['gen_uid']));
+    $note_details = $q->fetch();
+    Database::disconnect();
+
+    $response = $response->withHeader('Content-type', 'text/plain');
+    return $response->write($note_details['user_text']);
 });
 
 $app->post('/{gen_uid}', function($request, $response, $args) {
@@ -66,7 +83,6 @@ $app->post('/{gen_uid}', function($request, $response, $args) {
     Database::disconnect();
 
     return $this->view->render($response, 'note-template.twig', ['gen_uid' => $args['gen_uid'], 'user_text' => $user_text]);
-
 });
 
 // Run app
