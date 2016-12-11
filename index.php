@@ -2,7 +2,9 @@
 require 'includes/vendor/autoload.php';
 require 'functions.php';
 require 'config.php';
-use Psr7Middlewares\Middleware\TrailingSlash;
+
+use Psr\Http\Message\RequestInterface as Request;
+use Psr\Http\Message\ResponseInterface as Response;
 
 /* debugging data */
 $configuration = [
@@ -14,7 +16,24 @@ $c = new \Slim\Container($configuration);
 
 /* actual app */
 $app = new \Slim\App($c);
-$app->add(new TrailingSlash(false));
+$app->add(function (Request $request, Response $response, callable $next) {
+    $uri = $request->getUri();
+    $path = $uri->getPath();
+    if ($path != '/' && substr($path, -1) == '/') {
+        // permanently redirect paths with a trailing slash
+        // to their non-trailing counterpart
+        $uri = $uri->withPath(substr($path, 0, -1));
+        
+        if($request->getMethod() == 'GET') {
+            return $response->withRedirect((string)$uri, 301);
+        }
+        else {
+            return $next($request->withUri($uri), $response);
+        }
+    }
+
+    return $next($request, $response);
+});
 
 /* Twig Settings */
 $container = $app->getContainer();
@@ -87,4 +106,3 @@ $app->post('/{gen_uid}', function($request, $response, $args) {
 
 // Run app
 $app->run();
-

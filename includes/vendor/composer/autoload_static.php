@@ -19,7 +19,6 @@ class ComposerStaticInit62f8e4f60a347dcec7422e68cad4a3ab
         'P' => 
         array (
             'Psr\\Http\\Message\\' => 17,
-            'Psr7Middlewares\\' => 16,
         ),
         'I' => 
         array (
@@ -43,10 +42,6 @@ class ComposerStaticInit62f8e4f60a347dcec7422e68cad4a3ab
         'Psr\\Http\\Message\\' => 
         array (
             0 => __DIR__ . '/..' . '/psr/http-message/src',
-        ),
-        'Psr7Middlewares\\' => 
-        array (
-            0 => __DIR__ . '/..' . '/oscarotero/psr7-middlewares/src',
         ),
         'Interop\\Container\\' => 
         array (

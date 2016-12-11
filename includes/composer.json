@@ -1,7 +1,6 @@
 {
     "require": {
         "slim/slim": "^3.0",
-        "slim/twig-view": "^2.0",
-        "oscarotero/psr7-middlewares": "^3.18"
+        "slim/twig-view": "^2.0"
     }
 }
