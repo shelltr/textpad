@@ -8,3 +8,6 @@ savepad, based on notepad.cc
 ## requirements
 - need to make database (instrutions not up yet) manually
 - need to update config-example.php to make a config.php page
+
+# todo list
+- Update todo list
